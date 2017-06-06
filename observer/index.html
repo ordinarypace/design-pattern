@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Observer pattern</title>
+</head>
+<body>
+<script>
+    const Observer = (() => {
+        let observers = [];
+        let id = -1;
+
+        const subscribe = (observer) => {
+            this.id = getId( id++ );
+
+            if(observers.indexOf(observer) === -1){
+                registerSubscribe(observer);
+                return true;
+            }
+            return false;
+        };
+
+        const registerSubscribe = (observer) => {
+            observers.push({
+                id : this.id(),
+                observer
+            });
+        };
+
+        const unsubscribe = (id) => {
+            observers.forEach(o => {
+                if(o.id === id){
+                    observers.splice(o, 1);
+                }
+            });
+        };
+
+        const fire = (message) => {
+            observers.forEach(o => {
+                o.observer(message);
+            });
+        };
+
+        const getId = (id) => {
+            return () => id;
+        }
+
+        return {
+            subscribe : subscribe,
+            unsubscribe : unsubscribe,
+            fire : fire
+        }
+    })();
+
+    Observer.subscribe((message) => console.log(message));
+    Observer.fire('Observer Patterns');
+</script>
+</body>
+</html>
